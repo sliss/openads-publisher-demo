@@ -1,0 +1,14 @@
+{
+  "name": "openads-advertiser-demo-v2",
+  "dependencies": {
+    "tailwindcss": "3.x"
+  },
+  "devDependencies": {
+    "netlify-cli": "18.x"
+  },
+  "scripts": {
+    "start": "netlify dev -p 3690 --dir public",
+    "tailwind": "tailwindcss -o public/tw.css",
+    "tailwind:watch": "tailwindcss -o public/tw.css --watch"
+  }
+}

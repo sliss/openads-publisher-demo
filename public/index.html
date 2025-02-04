@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="https://app.openads.ai/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://app.openads.ai/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://app.openads.ai/favicon-16x16.png">
+
+    <title>OpenAds Brand Search Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300&family=Oswald:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/tw.css">
+  </head>
+  <body>
+
+    <div class="min-h-screen bg-[#d67238] text-white font-custom">
+      <div class="container mx-auto p-4 max-w-6xl">
+        <div class="flex justify-center mb-8">
+          <img
+            src="https://cdn.prod.website-files.com/669edcdf474e9a6d4ad71057/669edcdf474e9a6d4ad71071_openads-logo.svg"
+            alt="OpenAds AI"
+            width="539"
+            height="118"
+            priority
+          />
+        </div>
+        <h1 class="text-2xl font-bold mb-4 text-center font-custom">Brand Search Demo</h1>
+
+        <form id="brand-search-form" class="mb-8">
+          <div class="flex gap-2 relative">
+            <input
+              type="text"
+              placeholder="Enter url (e.g., https://nike.com)"
+              class="flex-grow bg-gray-800 text-white p-2 rounded-md"
+            />
+          </div>
+          <div class="mt-4">
+            <button
+              type="submit"
+              class="w-full bg-white text-black hover:bg-gray-200 rounded-md p-2 disabled:bg-gray-200"
+            >
+              Generate Example
+            </button>
+          </div>
+        </form>
+
+        <div id="loading-spinner" class="hidden text-center mb-8">
+          <Image
+            src="https://advertise.openads.ai/loading-spinner.gif"
+            alt="Loading..."
+            width="128"
+            height="128"
+            class="mx-auto mb-4"
+          />
+          <p class="text-lg">Scraping page...</p>
+        </div>
+
+        <div id="page-content" class="hidden bg-white rounded-md mt-8 text-gray-700 p-4 w-[1002px] mx-auto">
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://api.openads.ai';
+      window.stratosSettings = {
+        publisherId: '6660be5c4e70d17b07751c91', // prod
+        disableInitialLoad: true,
+        adSlots: [
+          {
+            adUnitCode: 'inline-ad',
+            adFormat: 'chat',
+            size: [970, 250],
+          }
+        ],
+      };
+      window.stratos = window.stratos || { queue: [] };
+      window.stratos.queue.push(function() {
+        console.log('Stratos initialized!')
+      });
+
+      const form = document.getElementById('brand-search-form');
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let domain = this.querySelector('input').value;
+        domain = domain.replace(/^https?:\/\//, '');
+
+        const button = form.querySelector('button');
+        button.disabled = true;
+        button.textContent = 'Loading...';
+
+        document.getElementById('page-content').classList.add('hidden');
+        const spinner = document.getElementById('loading-spinner');
+        spinner.classList.remove('hidden');
+
+        try {
+          let response = await fetch(`${baseUrl}/srv/scraper?domain=${domain}`);
+          if (!response.ok) {
+            throw new Error('Invalid API response');
+          }
+          const { scrapedPage } = await response.json();
+
+          const paragraphs = scrapedPage.paragraphs.map(text => `<p class="mt-1">${text}</p>`);
+          document.getElementById('page-content').innerHTML = [
+            paragraphs[0],
+            '<div id="inline-ad" class="w-full w-[970px] h-[250px] shadow-md mt-4 mb-4"></div>',
+            ...paragraphs.slice(1)
+          ].join('\n\n');
+
+          spinner.classList.add('hidden');
+          document.getElementById('page-content').classList.remove('hidden');
+
+          // Prepend some text to trick the commercial relevance classifier into not tossing out every single prompt.
+          const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + scrapedPage.paragraphs.join('\n\n');
+          window.stratos.queue.push(function() {
+            window.stratos.getAds(promptText);
+          });
+        } catch {
+          const spinner = document.getElementById('loading-spinner');
+          spinner.classList.add('hidden');
+          document.getElementById('page-content').classList.add('hidden');
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Generate Example';
+        }
+      });
+    </script>
+    <script async src="https://js.stratos.blue/stratos.js?publisherId=6723c110a57d08398172c304"></script>
+  </body>
+</html>
