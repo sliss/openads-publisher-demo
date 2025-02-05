@@ -1,131 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="https://app.openads.ai/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://app.openads.ai/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://app.openads.ai/favicon-16x16.png">
 
-    <title>OpenAds Brand Search Demo</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+  <!-- favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="https://app.openads.ai/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://app.openads.ai/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://app.openads.ai/favicon-16x16.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300&family=Oswald:wght@300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/tw.css">
-  </head>
-  <body>
+  <title>OpenAds Contextual Advertising Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <div class="min-h-screen bg-[#d67238] text-white font-custom">
-      <div class="container mx-auto p-4 max-w-6xl">
-        <div class="flex justify-center mb-8">
-          <img
-            src="https://cdn.prod.website-files.com/669edcdf474e9a6d4ad71057/669edcdf474e9a6d4ad71071_openads-logo.svg"
-            alt="OpenAds AI"
-            width="539"
-            height="118"
-            priority
-          />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300&family=Oswald:wght@300&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/tw.css">
+</head>
+
+<body>
+
+  <div class="min-h-screen bg-gradient-to-b from-[#d67238] to-[#b85f2d] text-white font-custom">
+    <div class="container mx-auto p-8 max-w-[1024px]">
+      <div class="flex justify-center mb-12">
+        <img src="https://cdn.prod.website-files.com/669edcdf474e9a6d4ad71057/669edcdf474e9a6d4ad71071_openads-logo.svg"
+          alt="OpenAds AI" width="339" height="78" class="w-auto h-20" />
+      </div>
+      <h1 class="text-4xl font-bold mb-8 text-center font-marcellus">Contextual Advertising Demo</h1>
+
+      <form id="brand-search-form" class="mb-8 max-w-2xl mx-auto">
+        <div class="flex gap-2 relative">
+          <input type="text" placeholder="Enter url (e.g., https://nike.com)"
+            class="flex-grow bg-white/10 backdrop-blur-sm text-white placeholder-white/70 p-4 rounded-lg border border-white/20 focus:outline-none focus:border-white/40 transition-colors" />
         </div>
-        <h1 class="text-2xl font-bold mb-4 text-center font-custom">Brand Search Demo</h1>
-
-        <form id="brand-search-form" class="mb-8">
-          <div class="flex gap-2 relative">
-            <input
-              type="text"
-              placeholder="Enter url (e.g., https://nike.com)"
-              class="flex-grow bg-gray-800 text-white p-2 rounded-md"
-            />
-          </div>
-          <div class="mt-4">
-            <button
-              type="submit"
-              class="w-full bg-white text-black hover:bg-gray-200 rounded-md p-2 disabled:bg-gray-200"
-            >
-              Generate Example
-            </button>
-          </div>
-        </form>
-
-        <div id="loading-spinner" class="hidden text-center mb-8">
-          <Image
-            src="https://advertise.openads.ai/loading-spinner.gif"
-            alt="Loading..."
-            width="128"
-            height="128"
-            class="mx-auto mb-4"
-          />
-          <p class="text-lg">Scraping page...</p>
+        <p id="url-error" class="text-red-200 mt-2 text-sm hidden">Please enter a valid URL (e.g., https://example.com)
+        </p>
+        <div class="mt-4">
+          <button type="submit"
+            class="w-full bg-white text-[#d67238] hover:bg-white/90 rounded-lg p-4 font-semibold transition-colors disabled:bg-white/70 disabled:cursor-not-allowed">
+            Generate Example
+          </button>
         </div>
+      </form>
 
-        <div id="page-content" class="hidden bg-white rounded-md mt-8 text-gray-700 p-4 w-[1002px] mx-auto">
-        </div>
+      <div id="loading-spinner" class="hidden text-center mb-8">
+        <img src="https://advertise.openads.ai/loading-spinner.gif" alt="Loading..." width="64" height="64"
+          class="mx-auto mb-4" />
+        <p class="text-xl font-light">Scraping page...</p>
+        <p id="loading-quote" class="mt-4 text-lg italic text-white/80 max-w-2xl mx-auto"></p>
+      </div>
+
+      <div id="page-content"
+        class="hidden bg-white/95 backdrop-blur-sm rounded-lg shadow-xl mt-8 text-gray-700 p-8 max-w-[1024px] mx-auto">
       </div>
     </div>
+  </div>
 
-    <script>
-      const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://api.openads.ai';
-      window.stratosSettings = {
-        publisherId: '6660be5c4e70d17b07751c91', // prod
-        disableInitialLoad: true,
-        adSlots: [
-          {
-            adUnitCode: 'inline-ad',
-            adFormat: 'chat',
-            size: [970, 250],
-          }
-        ],
-      };
-      window.stratos = window.stratos || { queue: [] };
-      window.stratos.queue.push(function() {
-        console.log('Stratos initialized!')
-      });
+  <script>
+    const quotes = [
+      "The best ideas come as jokes. Make your thinking as funny as possible. — David Ogilvy",
+      "If it doesn't sell, it isn't creative. — David Ogilvy",
+      "A good advertisement sells the product without drawing attention to itself. — David Ogilvy",
+      "Stopping advertising to save money is like stopping your watch to save time. — Henry Ford",
+      "The most powerful element in advertising is the truth. — Bill Bernbach",
+      "Nobody reads ads. People read what interests them. Sometimes, it's an ad. — Howard Gossage",
+      "In good times people want to advertise; in bad times they have to. — Bruce Barton",
+      "On average, five times as many people read the headline as the body copy. — David Ogilvy",
+      "Advertising is the 'wonder' in Wonder Bread. — Jef I. Richards",
+      "Never stop testing, and your advertising will never stop improving. — David Ogilvy",
+      "When you advertise fire extinguishers, open with the fire. — David Ogilvy",
+      "An ad is finished only when you can't find a single element to remove. — Robert Fleege",
+      "Advertising is the modern substitute for argument. — George Santayana",
+      "Where people aren't having any fun, they seldom produce good work. — David Ogilvy",
+      "The more informative your advertising, the more persuasive it will be. — David Ogilvy",
+      "Creativity is the secret to making the mundane memorable. — Leo Burnett"
+    ];
 
-      const form = document.getElementById('brand-search-form');
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        let domain = this.querySelector('input').value;
-        domain = domain.replace(/^https?:\/\//, '');
-
-        const button = form.querySelector('button');
-        button.disabled = true;
-        button.textContent = 'Loading...';
-
-        document.getElementById('page-content').classList.add('hidden');
-        const spinner = document.getElementById('loading-spinner');
-        spinner.classList.remove('hidden');
-
-        try {
-          let response = await fetch(`${baseUrl}/srv/scraper?domain=${domain}`);
-          if (!response.ok) {
-            throw new Error('Invalid API response');
-          }
-          const { scrapedPage } = await response.json();
-
-          const paragraphs = scrapedPage.paragraphs.map(text => `<p class="mt-1">${text}</p>`);
-          document.getElementById('page-content').innerHTML = [
-            paragraphs[0],
-            '<div id="inline-ad" class="w-full w-[970px] h-[250px] shadow-md mt-4 mb-4"></div>',
-            ...paragraphs.slice(1)
-          ].join('\n\n');
-
-          spinner.classList.add('hidden');
-          document.getElementById('page-content').classList.remove('hidden');
-
-          // Prepend some text to trick the commercial relevance classifier into not tossing out every single prompt.
-          const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + scrapedPage.paragraphs.join('\n\n');
-          window.stratos.queue.push(function() {
-            window.stratos.getAds(promptText);
-          });
-        } catch {
-          const spinner = document.getElementById('loading-spinner');
-          spinner.classList.add('hidden');
-          document.getElementById('page-content').classList.add('hidden');
-        } finally {
-          button.disabled = false;
-          button.textContent = 'Generate Example';
+    const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://api.openads.ai';
+    window.stratosSettings = {
+      publisherId: '6660be5c4e70d17b07751c91', // prod
+      disableInitialLoad: true,
+      adSlots: [
+        {
+          adUnitCode: 'inline-ad',
+          adFormat: 'chat',
+          size: [970, 270],
         }
-      });
-    </script>
-    <script async src="https://js.stratos.blue/stratos.js?publisherId=6723c110a57d08398172c304"></script>
-  </body>
+      ],
+      cssOverrides: ` :root {
+        --background: #fff5f0;
+        --text: #4a3428;
+        --header: #000000;
+        --header-background: #fff5f0;
+        --title: #000000;
+        --question-bubble: #FFFFFF;
+        --highlight: #b85f2d;
+        --action-button: #d67238;
+      }
+      #visit-site-link {
+        background-color: #d67238;
+        color: white;
+      }
+      #visit-site-link:hover {
+        background-color: #b85f2d;
+      }
+      .chat-message-bubble {
+        border: 1px solid rgba(214, 114, 56, 0.2);
+      }`
+    };
+    window.stratos = window.stratos || { queue: [] };
+    window.stratos.queue.push(function() {
+      console.log('Stratos initialized!')
+    });
+
+    const form = document.getElementById('brand-search-form');
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const input = this.querySelector('input');
+      const errorElement = document.getElementById('url-error');
+      let url = input.value.trim();
+
+      // URL validation
+      try {
+        // Add https if no protocol specified
+        if (!/^https?:\/\//i.test(url)) {
+          url = 'https://' + url;
+        }
+
+        // Check if it's a valid URL
+        const urlObj = new URL(url);
+
+        // Check for valid domain format (at least one dot and valid TLD)
+        const domainRegex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/i;
+        if (!domainRegex.test(urlObj.hostname)) {
+          throw new Error('Invalid domain format');
+        }
+
+        errorElement.classList.add('hidden');
+      } catch (err) {
+        errorElement.classList.remove('hidden');
+        return;
+      }
+
+      // Extract domain from valid URL
+      const domain = new URL(url).hostname;
+
+      const button = form.querySelector('button');
+      button.disabled = true;
+      button.textContent = 'Loading...';
+
+      document.getElementById('page-content').classList.add('hidden');
+      const spinner = document.getElementById('loading-spinner');
+      const quoteElement = document.getElementById('loading-quote');
+      quoteElement.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+      spinner.classList.remove('hidden');
+
+      try {
+        let response = await fetch(`${baseUrl}/srv/scraper?domain=${domain}`);
+        if (!response.ok) {
+          throw new Error('Invalid API response');
+        }
+        const { scrapedPage } = await response.json();
+
+        const paragraphs = scrapedPage.paragraphs.map(text => `<p class="mt-1">${text}</p>`);
+        document.getElementById('page-content').innerHTML = [
+          paragraphs[0],
+          '<div class="flex justify-center"><div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4"></div></div>',
+          ...paragraphs.slice(1)
+        ].join('\n\n');
+
+        spinner.classList.add('hidden');
+        quoteElement.textContent = '';
+        document.getElementById('page-content').classList.remove('hidden');
+
+        // Prepend some text to trick the commercial relevance classifier into not tossing out every single prompt.
+        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + scrapedPage.paragraphs.join('\n\n');
+        window.stratos.queue.push(function() {
+          window.stratos.getAds(promptText);
+        });
+      } catch {
+        const spinner = document.getElementById('loading-spinner');
+        spinner.classList.add('hidden');
+        quoteElement.textContent = '';
+        document.getElementById('page-content').classList.add('hidden');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Generate Example';
+      }
+    });
+  </script>
+  <script async src="https://js.stratos.blue/stratos.js?publisherId=6723c110a57d08398172c304"></script>
+</body>
+
 </html>

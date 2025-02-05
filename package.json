@@ -1,14 +1,22 @@
 {
-  "name": "openads-advertiser-demo-v2",
-  "dependencies": {
-    "tailwindcss": "3.x"
-  },
+  "name": "openads-publisher-demo",
   "devDependencies": {
-    "netlify-cli": "18.x"
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5"
   },
   "scripts": {
-    "start": "netlify dev -p 3690 --dir public",
-    "tailwind": "tailwindcss -o public/tw.css",
-    "tailwind:watch": "tailwindcss -o public/tw.css --watch"
+    "dev": "npx tailwindcss -i ./src/input.css -o ./public/tw.css --watch & npx serve public",
+    "build": "npx tailwindcss -i ./src/input.css -o ./public/tw.css --minify",
+    "start": "npx serve public"
+  },
+  "description": "",
+  "version": "1.0.0",
+  "main": "tailwind.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serve": "^14.2.1"
   }
 }
