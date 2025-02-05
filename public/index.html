@@ -19,7 +19,7 @@
 <body>
 
   <div class="min-h-screen bg-gradient-to-b from-[#d67238] to-[#b85f2d] text-white font-custom">
-    <div class="container mx-auto p-8 max-w-[1024px]">
+    <div class="container mx-auto p-4 max-w-[1024px]">
       <div class="flex justify-center mb-12">
         <img src="https://cdn.prod.website-files.com/669edcdf474e9a6d4ad71057/669edcdf474e9a6d4ad71071_openads-logo.svg"
           alt="OpenAds AI" width="339" height="78" class="w-auto h-20" />
@@ -154,13 +154,14 @@
       spinner.classList.remove('hidden');
 
       try {
-        let response = await fetch(`${baseUrl}/srv/scraper?domain=${domain}`);
+        let response = await fetch(`${baseUrl}/srv/publisher-scraper?domain=${domain}&url=${url}`);
         if (!response.ok) {
           throw new Error('Invalid API response');
         }
-        const { scrapedPage } = await response.json();
+        const scrapedPage = await response.json();
 
-        const paragraphs = scrapedPage.paragraphs.map(text => `<p class="mt-1">${text}</p>`);
+        const lines = scrapedPage.extractedText.split('\n').map(line => line.trim()).filter(line => !!line);
+        const paragraphs = lines.map(text => `<p class="mt-1">${text}</p>`);
         document.getElementById('page-content').innerHTML = [
           paragraphs[0],
           '<div class="flex justify-center"><div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4"></div></div>',
@@ -172,7 +173,7 @@
         document.getElementById('page-content').classList.remove('hidden');
 
         // Prepend some text to trick the commercial relevance classifier into not tossing out every single prompt.
-        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + scrapedPage.paragraphs.join('\n\n');
+        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + lines.join('\n\n');
         window.stratos.queue.push(function() {
           window.stratos.getAds(promptText);
         });
