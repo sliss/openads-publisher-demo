@@ -14,6 +14,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300&family=Oswald:wght@300&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/tw.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    #page-content h1 {
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    #page-content h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    #page-content h3 {
+      font-size: 1.17em;
+      font-weight: bold;
+    }
+
+    #page-content strong {
+      font-weight: bold;
+    }
+
+    #page-content ul {
+      list-style: disc;
+      padding-left: 0.5em;
+    }
+
+    #page-content p {
+      margin-bottom: 1em;
+    }
+
+    #page-content hr {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+
+  </style>
 </head>
 
 <body>
@@ -38,6 +75,9 @@
             class="w-full bg-white text-[#d67238] hover:bg-white/90 rounded-lg p-4 font-semibold transition-colors disabled:bg-white/70 disabled:cursor-not-allowed">
             Generate Example
           </button>
+        </div>
+
+        <div id="general-error" class="hidden text-red-200 mt-4 rounded-lg mb-8">
         </div>
       </form>
 
@@ -116,7 +156,10 @@
       e.preventDefault();
       const input = this.querySelector('input');
       const errorElement = document.getElementById('url-error');
+      const generalError = document.getElementById('general-error');
       let url = input.value.trim();
+
+      generalError.classList.add('hidden');
 
       // URL validation
       try {
@@ -160,12 +203,24 @@
         }
         const scrapedPage = await response.json();
 
-        const lines = scrapedPage.extractedText.split('\n').map(line => line.trim()).filter(line => !!line);
-        const paragraphs = lines.map(text => `<p class="mt-1">${text}</p>`);
+        const lines = scrapedPage.extractedMarkdown.trim().split('\n');
+
+        const totalLines = lines.length;
+        let adPoint = Math.floor(lines.length / 3);
+        for (; adPoint < 2 * lines.length / 3; ++adPoint) {
+          if (!lines[adPoint].trim()) {
+            break;
+          }
+        }
+        // If no blank lines between 1/3 and 2/3 of the content, just fall back to right below header
+        if (adPoint >= 2 * lines.length / 3) {
+          adPoint = 1;
+        }
+
         document.getElementById('page-content').innerHTML = [
-          paragraphs[0],
+          marked.parse(lines.slice(0, adPoint).join('\n')).replaceAll('{: target="_blank"}', ''),
           '<div class="flex justify-center"><div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4"></div></div>',
-          ...paragraphs.slice(1)
+          marked.parse(lines.slice(adPoint).join('\n')).replaceAll('{: target="_blank"}', '')
         ].join('\n\n');
 
         spinner.classList.add('hidden');
@@ -177,11 +232,16 @@
         window.stratos.queue.push(function() {
           window.stratos.getAds(promptText);
         });
-      } catch {
+      } catch (error) {
         const spinner = document.getElementById('loading-spinner');
         spinner.classList.add('hidden');
         quoteElement.textContent = '';
         document.getElementById('page-content').classList.add('hidden');
+
+        const generalError = document.getElementById('general-error');
+        generalError.textContent = 'Error: ' + (error.response?.data?.message ?? 'An error occurred while processing your request. Please try again.');
+        generalError.classList.remove('hidden');
+        console.error(error);
       } finally {
         button.disabled = false;
         button.textContent = 'Generate Example';
