@@ -218,8 +218,103 @@
         <p id="loading-quote" class="mt-4 text-lg italic text-white/80 max-w-2xl mx-auto"></p>
       </div>
 
+      <div id="context-dashboard"
+        class="hidden bg-white/95 backdrop-blur-sm rounded-lg shadow-xl mt-8 text-gray-700 p-8 max-w-[1024px] mx-auto mb-8">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold font-marcellus text-gray-800">Page Context Analysis</h2>
+          <div class="flex items-center gap-4">
+            <span class="text-sm font-medium text-gray-500">Content Quality:</span>
+            <div class="flex gap-3">
+              <span id="sentiment"
+                class="px-4 py-1.5 rounded-full text-sm bg-[#d67238]/5 text-[#d67238] font-medium"></span>
+              <span id="reading-level"
+                class="px-4 py-1.5 rounded-full text-sm bg-[#d67238]/5 text-[#d67238] font-medium"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Left Column -->
+          <div class="space-y-8">
+            <!-- IAB Categories -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">IAB Categories</h3>
+              <div id="iab-categories" class="space-y-4">
+                <div>
+                  <p class="text-sm text-gray-500 mb-2">Primary</p>
+                  <p id="primary-category" class="font-medium text-gray-700"></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500 mb-2">Secondary</p>
+                  <p id="secondary-categories" class="font-medium text-gray-700"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advertiser Categories -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">Advertiser Categories</h3>
+              <div id="advertiser-categories" class="space-y-4">
+                <div>
+                  <p class="text-sm text-gray-500 mb-2">Primary</p>
+                  <p id="advertiser-categories-primary" class="font-medium text-gray-700"></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500 mb-2">Secondary</p>
+                  <p id="advertiser-categories-secondary" class="font-medium text-gray-700"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content Tone -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">Content Tone</h3>
+              <div id="content-tone" class="flex flex-wrap gap-2"></div>
+            </div>
+          </div>
+
+          <!-- Middle Column -->
+          <div class="space-y-8">
+            <!-- Main Topics -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">Main Topics</h3>
+              <div id="main-topics" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Named Entities -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">Key Entities</h3>
+              <div id="named-entities" class="space-y-5">
+                <div>
+                  <p class="text-sm text-gray-500 mb-2">Top Brands</p>
+                  <div id="brands" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500 mb-2">Organizations</p>
+                  <div id="organizations" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500 mb-2">Locations</p>
+                  <div id="locations" class="flex flex-wrap gap-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">GARM Risk Analysis</h3>
+            <div id="garm-risks" class="grid grid-cols-1 gap-3"></div>
+          </div>
+        </div>
+      </div>
+
       <div id="page-content"
         class="hidden bg-white/95 backdrop-blur-sm rounded-lg shadow-xl mt-8 text-gray-700 p-8 max-w-[1024px] mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">OpenAds Contextual Ad</h1>
+        <div class="markdown-content">
+          <!-- Content will be inserted here by JavaScript -->
+        </div>
       </div>
     </div>
   </div>
@@ -340,7 +435,12 @@
         if (!response.ok) {
           throw new Error('Invalid API response');
         }
-        const scrapedPage = await response.json();
+        const responseBody = await response.json();
+        const scrapedPage = responseBody.pageDoc;
+        const contextualSignals = responseBody.contextualSignals;
+
+        // Populate the context dashboard
+        populateContextDashboard(contextualSignals);
 
         const lines = scrapedPage.extractedMarkdown.trim().split('\n');
 
@@ -360,6 +460,7 @@
         }
 
         document.getElementById('page-content').innerHTML = [
+          `<h1 class="text-3xl font-bold mb-8 text-center">Article Content</h1>`,
           `<div class="markdown-content">
             ${marked.parse(lines.slice(0, adPoint).join('\n'))}
           </div>`,
@@ -393,6 +494,87 @@
         button.textContent = 'Generate Example';
       }
     });
+
+    function populateContextDashboard(contextualSignals) {
+      const dashboard = document.getElementById('context-dashboard');
+      dashboard.classList.remove('hidden');
+
+      // Content Quality Indicators
+      const sentiment = contextualSignals.semantic_analysis.sentiment.overall;
+      const readingLevel = contextualSignals.semantic_analysis.content_quality.reading_level;
+      document.getElementById('sentiment').textContent = sentiment.charAt(0).toUpperCase() + sentiment.slice(1);
+      document.getElementById('reading-level').textContent = readingLevel.charAt(0).toUpperCase() + readingLevel.slice(1);
+
+      // IAB Categories
+      document.getElementById('primary-category').textContent = contextualSignals.iab_content_category.primary;
+      document.getElementById('secondary-categories').textContent = contextualSignals.iab_content_category.secondary.join(' • ');
+
+      // Advertiser categories
+      const advertiserPrimary = document.getElementById('advertiser-categories-primary');
+      const advertiserSecondary = document.getElementById('advertiser-categories-secondary');
+
+      if (contextualSignals.advertiser_categories) {
+        if (advertiserPrimary) {
+          advertiserPrimary.textContent = Array.isArray(contextualSignals.advertiser_categories.primary)
+            ? contextualSignals.advertiser_categories.primary.join(' • ')
+            : contextualSignals.advertiser_categories.primary || 'N/A';
+        }
+
+        if (advertiserSecondary) {
+          advertiserSecondary.textContent = Array.isArray(contextualSignals.advertiser_categories.secondary)
+            ? contextualSignals.advertiser_categories.secondary.join(' • ')
+            : contextualSignals.advertiser_categories.secondary || 'N/A';
+        }
+      }
+
+      // Content Tone
+      const toneContainer = document.getElementById('content-tone');
+      toneContainer.innerHTML = contextualSignals.semantic_analysis.content_tone
+        .map(tone => `<span class="bg-[#d67238]/5 text-[#d67238] px-3 py-1.5 rounded-full text-sm font-medium">${tone.charAt(0).toUpperCase() + tone.slice(1)
+          }</span>`)
+        .join('');
+
+      // Main Topics
+      const topicsContainer = document.getElementById('main-topics');
+      topicsContainer.innerHTML = contextualSignals.semantic_analysis.main_topics
+        .map(topic => `<span class="bg-[#d67238]/5 text-[#d67238] px-3 py-1.5 rounded-full text-sm font-medium">${topic}</span>`)
+        .join('');
+
+      // Named Entities
+      const createEntityTags = (entities) => entities
+        .slice(0, 5)
+        .map(entity => `<span class="bg-[#d67238]/5 text-[#d67238] px-3 py-1.5 rounded-full text-sm font-medium">${entity}</span>`)
+        .join('');
+
+      document.getElementById('brands').innerHTML = createEntityTags(contextualSignals.semantic_analysis.named_entities.brands);
+      document.getElementById('organizations').innerHTML = createEntityTags(contextualSignals.semantic_analysis.named_entities.organizations);
+      document.getElementById('locations').innerHTML = createEntityTags(contextualSignals.semantic_analysis.named_entities.locations);
+
+      // GARM Risks
+      const garmContainer = document.getElementById('garm-risks');
+      garmContainer.innerHTML = Object.entries(contextualSignals.garm_risks)
+        .map(([key, value]) => {
+          const riskColors = {
+            'none': 'bg-green-50 text-green-700',
+            'low': 'bg-yellow-50 text-yellow-700',
+            'medium': 'bg-orange-50 text-orange-700',
+            'high': 'bg-red-50 text-red-700'
+          };
+          const colorClass = riskColors[value.risk_level] || riskColors.none;
+
+          return `
+            <div class="p-3 ${colorClass} rounded-lg">
+              <div class="flex justify-between items-center">
+                <p class="font-medium text-sm">${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/60 uppercase">
+                  ${value.risk_level}
+                </span>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
   </script>
   <script async src="https://js.stratos.blue/stratos.js?publisherId=6723c110a57d08398172c304"></script>
 </body>
