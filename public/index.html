@@ -20,16 +20,19 @@
     #page-content h1 {
       font-size: 2em;
       font-weight: bold;
+      margin: 0.67em 0;
     }
 
     #page-content h2 {
       font-size: 1.5em;
       font-weight: bold;
+      margin: 0.83em 0;
     }
 
     #page-content h3 {
       font-size: 1.17em;
       font-weight: bold;
+      margin: 1em 0;
     }
 
     #page-content strong {
@@ -38,18 +41,145 @@
 
     #page-content ul {
       list-style: disc;
-      padding-left: 0.5em;
+      padding-left: 2em;
+      margin: 1em 0;
+    }
+
+    #page-content ol {
+      list-style: decimal;
+      padding-left: 2em;
+      margin: 1em 0;
     }
 
     #page-content p {
-      margin-bottom: 1em;
+      margin: 1em 0;
+    }
+
+    #page-content a {
+      color: #d67238;
+      text-decoration: underline;
+    }
+
+    #page-content blockquote {
+      border-left: 4px solid #d67238;
+      margin: 1em 0;
+      padding-left: 1em;
+      color: #666;
+    }
+
+    #page-content code {
+      background-color: #f0f0f0;
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+
+    #page-content pre {
+      background-color: #f0f0f0;
+      padding: 1em;
+      border-radius: 3px;
+      overflow-x: auto;
+      margin: 1em 0;
     }
 
     #page-content hr {
-      margin-top: 0.5em;
-      margin-bottom: 0.5em;
+      border: 0;
+      border-top: 1px solid #ddd;
+      margin: 1em 0;
     }
 
+    .markdown-content {
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .markdown-content>*:first-child {
+      margin-top: 0;
+    }
+
+    .markdown-content>*:last-child {
+      margin-bottom: 0;
+    }
+
+    .markdown-content h1 {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 1em 0 0.5em;
+      color: #333;
+    }
+
+    .markdown-content h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 1em 0 0.5em;
+      color: #333;
+    }
+
+    .markdown-content h3 {
+      font-size: 1.17em;
+      font-weight: bold;
+      margin: 1em 0 0.5em;
+      color: #333;
+    }
+
+    .markdown-content p {
+      margin: 0.5em 0 1em;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+      margin: 0.5em 0 1em 2em;
+    }
+
+    .markdown-content ul {
+      list-style-type: disc;
+    }
+
+    .markdown-content ol {
+      list-style-type: decimal;
+    }
+
+    .markdown-content li {
+      margin: 0.3em 0;
+    }
+
+    .markdown-content a {
+      color: #d67238;
+      text-decoration: underline;
+    }
+
+    .markdown-content blockquote {
+      border-left: 4px solid #d67238;
+      margin: 1em 0;
+      padding-left: 1em;
+      color: #666;
+    }
+
+    .markdown-content code {
+      background-color: #f0f0f0;
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+
+    .markdown-content pre {
+      background-color: #f0f0f0;
+      padding: 1em;
+      border-radius: 3px;
+      overflow-x: auto;
+      margin: 1em 0;
+    }
+
+    .markdown-content hr {
+      border: 0;
+      border-top: 1px solid #ddd;
+      margin: 1em 0;
+    }
+
+    .markdown-content img {
+      max-width: 100%;
+      height: auto;
+    }
   </style>
 </head>
 
@@ -65,7 +195,7 @@
 
       <form id="brand-search-form" class="mb-8 max-w-2xl mx-auto">
         <div class="flex gap-2 relative">
-          <input type="text" placeholder="Enter url (e.g., https://nike.com)"
+          <input type="text" placeholder="Enter url (e.g., https://forbes.com/the-50-hottest-startups)"
             class="flex-grow bg-white/10 backdrop-blur-sm text-white placeholder-white/70 p-4 rounded-lg border border-white/20 focus:outline-none focus:border-white/40 transition-colors" />
         </div>
         <p id="url-error" class="text-red-200 mt-2 text-sm hidden">Please enter a valid URL (e.g., https://example.com)
@@ -95,6 +225,15 @@
   </div>
 
   <script>
+    // Add marked configuration at the start
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      headerIds: false,
+      mangle: false,
+      sanitize: false
+    });
+
     const quotes = [
       "The best ideas come as jokes. Make your thinking as funny as possible. — David Ogilvy",
       "If it doesn't sell, it isn't creative. — David Ogilvy",
@@ -205,6 +344,9 @@
 
         const lines = scrapedPage.extractedMarkdown.trim().split('\n');
 
+        // Add debug logging
+        // console.log('Received markdown:', scrapedPage.extractedMarkdown);
+
         const totalLines = lines.length;
         let adPoint = Math.floor(lines.length / 3);
         for (; adPoint < 2 * lines.length / 3; ++adPoint) {
@@ -218,9 +360,13 @@
         }
 
         document.getElementById('page-content').innerHTML = [
-          marked.parse(lines.slice(0, adPoint).join('\n')).replaceAll('{: target="_blank"}', ''),
+          `<div class="markdown-content">
+            ${marked.parse(lines.slice(0, adPoint).join('\n'))}
+          </div>`,
           '<div class="flex justify-center"><div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4"></div></div>',
-          marked.parse(lines.slice(adPoint).join('\n')).replaceAll('{: target="_blank"}', '')
+          `<div class="markdown-content">
+            ${marked.parse(lines.slice(adPoint).join('\n'))}
+          </div>`
         ].join('\n\n');
 
         spinner.classList.add('hidden');
