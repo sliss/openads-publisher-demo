@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "npx tailwindcss -i ./src/input.css -o ./public/tw.css --watch & npx serve public",
     "build": "npx tailwindcss -i ./src/input.css -o ./public/tw.css --minify",
-    "start": "npx serve public"
+    "start": "npx serve public",
+    "build:css": "tailwindcss build src/input.css -o public/tw.css"
   },
   "description": "",
   "version": "1.0.0",
