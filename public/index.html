@@ -244,10 +244,16 @@
   <div class="min-h-screen bg-gradient-to-b from-[#d67238] to-[#b85f2d] text-white font-custom">
     <div class="container mx-auto p-4 max-w-[1024px]">
       <div class="flex justify-center mb-12">
-        <img src="https://cdn.prod.website-files.com/669edcdf474e9a6d4ad71057/669edcdf474e9a6d4ad71071_openads-logo.svg"
-          alt="OpenAds AI" width="339" height="78" class="w-auto h-20" />
+        <a href="https://openads.ai" target="_blank" rel="noopener noreferrer">
+          <img
+            src="https://cdn.prod.website-files.com/669edcdf474e9a6d4ad71057/669edcdf474e9a6d4ad71071_openads-logo.svg"
+            alt="OpenAds AI" width="339" height="78" class="w-auto h-20" />
+        </a>
       </div>
-      <h1 class="text-4xl font-bold mb-8 text-center font-marcellus">Contextual Advertising Demo</h1>
+      <h1 class="text-4xl font-bold mb-4 text-center font-marcellus">Contextual Advertising Demo</h1>
+      <p class="text-center text-white/80 max-w-2xl mx-auto mb-8 text-lg">
+        Enter any URL to analyze its content's tone, brand suitability, and contextual relevance.
+      </p>
 
       <form id="brand-search-form" class="mb-8 max-w-2xl mx-auto">
         <div class="flex gap-2 relative">
@@ -279,7 +285,7 @@
         <div class="flex items-center justify-between mb-8">
           <h2 class="text-2xl font-bold font-marcellus text-gray-800">Page Context Analysis</h2>
           <div class="flex items-center gap-4">
-            <span class="text-sm font-medium text-gray-500">Content Quality:</span>
+            <span class="text-sm font-medium text-gray-500">Sentiment & Reading Level:</span>
             <div class="flex gap-3">
               <span id="sentiment"
                 class="px-4 py-1.5 rounded-full text-sm bg-[#d67238]/5 text-[#d67238] font-medium"></span>
@@ -327,6 +333,12 @@
               <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">Content Tone</h3>
               <div id="content-tone" class="flex flex-wrap gap-2"></div>
             </div>
+
+            <!-- Content Summary -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">Content Summary</h3>
+              <p id="content-summary" class="text-sm text-gray-700 leading-relaxed"></p>
+            </div>
           </div>
 
           <!-- Middle Column -->
@@ -358,9 +370,51 @@
           </div>
 
           <!-- Right Column -->
-          <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-            <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">GARM Risk Analysis</h3>
-            <div id="garm-risks" class="grid grid-cols-1 gap-3"></div>
+          <div class="space-y-8">
+            <!-- Domain & UGC Risks -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">Domain & Content Risks</h3>
+              <div class="grid grid-cols-1 gap-3">
+                <!-- Domain Reputation Risk -->
+                <div class="tooltip">
+                  <div class="p-3 rounded-lg" id="domain-reputation-risk">
+                    <div class="flex justify-between items-center">
+                      <p class="font-medium text-sm">Domain Reputation</p>
+                      <span
+                        class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/60 uppercase risk-level"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MFA Risk -->
+                <div class="tooltip">
+                  <div class="p-3 rounded-lg" id="mfa-risk">
+                    <div class="flex justify-between items-center">
+                      <p class="font-medium text-sm">Made For Advertising</p>
+                      <span
+                        class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/60 uppercase risk-level"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- UGC Risk -->
+                <div class="tooltip">
+                  <div class="p-3 rounded-lg" id="ugc-risk">
+                    <div class="flex justify-between items-center">
+                      <p class="font-medium text-sm">User Generated Content</p>
+                      <span
+                        class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/60 uppercase risk-level"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- GARM Risk Analysis -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-800">GARM Risk Analysis</h3>
+              <div id="garm-risks" class="grid grid-cols-1 gap-3"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -572,13 +626,16 @@
           : contextualSignals.advertiser_categories.secondary;
 
       // Content Tone
-      const toneContainer = document.getElementById('content-tone');
-      toneContainer.innerHTML = contextualSignals.semantic_analysis.content_tone
+      const contentToneContainer = document.getElementById('content-tone');
+      contentToneContainer.innerHTML = contextualSignals.semantic_analysis.content_tone
         .map(tone => `
           <span class="bg-[#d67238]/5 text-[#d67238] px-3 py-1.5 rounded-full text-sm font-medium">
             ${tone.charAt(0).toUpperCase() + tone.slice(1)}
           </span>
         `).join('');
+
+      // Content Summary
+      document.getElementById('content-summary').textContent = contextualSignals.summary;
 
       // Main Topics
       const topicsContainer = document.getElementById('main-topics');
@@ -626,6 +683,52 @@
           `;
         })
         .join('');
+
+      // Domain Reputation Risk
+      const domainRiskElement = document.getElementById('domain-reputation-risk');
+      const domainRisk = contextualSignals.domain_reputation_risks;
+      const domainRiskColors = {
+        'none': 'bg-green-50 text-green-700',
+        'low': 'bg-yellow-50 text-yellow-700',
+        'medium': 'bg-orange-50 text-orange-700',
+        'high': 'bg-red-50 text-red-700'
+      };
+      domainRiskElement.className = `p-3 ${domainRiskColors[domainRisk.risk_level]} rounded-lg`;
+      domainRiskElement.querySelector('.risk-level').textContent = domainRisk.risk_level;
+      if (domainRisk.risk_level !== 'none') {
+        domainRiskElement.parentElement.innerHTML += `<span class="tooltiptext">${domainRisk.evidence}</span>`;
+      }
+
+      // MFA Risk
+      const mfaRiskElement = document.getElementById('mfa-risk');
+      const mfaRisk = contextualSignals.mfa_level;
+      const mfaRiskColors = {
+        'none': 'bg-green-50 text-green-700',
+        'low': 'bg-yellow-50 text-yellow-700',
+        'medium': 'bg-orange-50 text-orange-700',
+        'high': 'bg-red-50 text-red-700'
+      };
+      mfaRiskElement.className = `p-3 ${mfaRiskColors[mfaRisk]} rounded-lg`;
+      mfaRiskElement.querySelector('.risk-level').textContent = mfaRisk;
+      if (mfaRisk !== 'none') {
+        const evidence = "This site shows characteristics of being Made For Advertising (MFA), which typically includes clickbait, sensational headlines, and low-quality or AI-generated content designed primarily to generate ad revenue.";
+        mfaRiskElement.parentElement.innerHTML += `<span class="tooltiptext">${evidence}</span>`;
+      }
+
+      // UGC Risk
+      const ugcRiskElement = document.getElementById('ugc-risk');
+      const ugcRisk = contextualSignals.ugc_risks;
+      const ugcRiskColors = {
+        'none': 'bg-green-50 text-green-700',
+        'low': 'bg-yellow-50 text-yellow-700',
+        'medium': 'bg-orange-50 text-orange-700',
+        'high': 'bg-red-50 text-red-700'
+      };
+      ugcRiskElement.className = `p-3 ${ugcRiskColors[ugcRisk.risk_level]} rounded-lg`;
+      ugcRiskElement.querySelector('.risk-level').textContent = ugcRisk.risk_level;
+      if (ugcRisk.risk_level !== 'none') {
+        ugcRiskElement.parentElement.innerHTML += `<span class="tooltiptext">${ugcRisk.evidence}</span>`;
+      }
     }
 
     // Function to cycle quotes
