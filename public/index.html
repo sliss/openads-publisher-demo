@@ -319,7 +319,7 @@
 
             <!-- Advertiser Categories -->
             <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Advertiser Categories</h3>
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Recommended Advertiser Categories</h3>
               <div id="advertiser-categories" class="space-y-4">
                 <div>
                   <p class="text-sm text-gray-500 mb-2">Primary</p>
@@ -360,14 +360,14 @@
 
             <!-- Named Entities -->
             <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Key Entities</h3>
+              <!-- <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Key Entities</h3> -->
               <div id="named-entities" class="space-y-5">
                 <div>
-                  <p class="text-sm text-gray-500 mb-2">Top Brands</p>
+                  <!-- <p class="text-sm text-gray-500 mb-2">Top Entities</p> -->
                   <div id="brands" class="flex flex-wrap gap-2"></div>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500 mb-2">Organizations</p>
+                  <!-- <p class="text-sm text-gray-500 mb-2">Organizations</p> -->
                   <div id="organizations" class="flex flex-wrap gap-2"></div>
                 </div>
                 <div>
@@ -557,40 +557,22 @@
           throw new Error('Invalid API response');
         }
         const responseBody = await response.json();
-        const scrapedPage = responseBody.pageDoc;
         const contextualSignals = responseBody.contextualSignals;
 
         // Populate the context dashboard
         populateContextDashboard(contextualSignals);
 
-        const lines = scrapedPage.extractedMarkdown.trim().split('\n');
-
-        const totalLines = lines.length;
-        let adPoint = Math.floor(lines.length / 3);
-        for (; adPoint < 2 * lines.length / 3; ++adPoint) {
-          if (!lines[adPoint].trim()) {
-            break;
-          }
-        }
-        if (adPoint >= 2 * lines.length / 3) {
-          adPoint = 1;
-        }
-
+        // Only show the ad slot without page content
         document.getElementById('page-content').innerHTML = [
           `<h1 class="text-3xl font-bold mb-8 text-center">Contextual Ad</h1>`,
-          `<div class="markdown-content">
-            ${marked.parse(lines.slice(0, adPoint).join('\n'))}
-          </div>`,
-          '<div class="flex justify-center"><div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4"></div></div>',
-          `<div class="markdown-content">
-            ${marked.parse(lines.slice(adPoint).join('\n'))}
-          </div>`
+          '<div class="flex justify-center"><div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4"></div></div>'
         ].join('\n\n');
 
         spinner.classList.add('hidden');
         document.getElementById('page-content').classList.remove('hidden');
 
-        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + lines.join('\n\n');
+        // Pass the full content to stratos for contextual targeting
+        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + responseBody.pageDoc.extractedMarkdown;
         window.stratos.queue.push(function() {
           window.stratos.getAds(promptText);
         });
@@ -713,18 +695,16 @@
       const mfaRiskElement = document.getElementById('mfa-risk');
       const mfaRisk = contextualSignals.mfa_level;
       const mfaRiskColors = {
-        'none': 'bg-green-50 text-green-700',
+        'none': 'bg-gray-100 text-gray-400',
         'low': 'bg-yellow-50 text-yellow-700',
         'medium': 'bg-orange-50 text-orange-700',
         'high': 'bg-red-50 text-red-700'
       };
-      mfaRiskElement.className = `p-3 ${mfaRiskColors[mfaRisk]} rounded-lg`;
-      mfaRiskElement.querySelector('.risk-level').textContent = mfaRisk;
-      if (mfaRisk !== 'none') {
-        const evidence = "This site shows characteristics of being Made For Advertising (MFA), which typically includes clickbait, sensational headlines, and low-quality or AI-generated content designed primarily to generate ad revenue.";
-        mfaRiskElement.parentElement.className = 'tooltip';
-        mfaRiskElement.parentElement.innerHTML += `<span class="tooltiptext">${evidence}</span>`;
-      }
+      mfaRiskElement.className = `p-3 ${mfaRiskColors[mfaRisk]} rounded-lg opacity-50`;
+      mfaRiskElement.querySelector('.risk-level').textContent = 'COMING SOON';
+      const evidence = "Made For Advertising (MFA) evaluation coming soon. This feature will identify sites designed primarily to generate ad revenue through arbitrage and heavy ad loads.";
+      mfaRiskElement.parentElement.className = 'tooltip';
+      mfaRiskElement.parentElement.innerHTML += `<span class="tooltiptext">${evidence}</span>`;
 
       // UGC Risk
       const ugcRiskElement = document.getElementById('ugc-risk');
