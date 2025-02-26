@@ -587,7 +587,6 @@
         document.getElementById('page-content').classList.remove('hidden');
 
         // Pass the full content to stratos for contextual targeting
-        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + responseBody.pageDoc.extractedText;
         window.stratos.queue.push(function() {
           // Add timeout to show fallback if no ad is generated within 5 seconds
           const fallbackTimeout = setTimeout(() => {
@@ -597,7 +596,7 @@
             }
           }, 5000);
 
-          window.stratos.getAds(promptText);
+          window.stratos.getAds(null, null, url);
         });
 
       } catch (error) {
@@ -708,6 +707,7 @@
         'medium': 'bg-orange-900/40 text-orange-100',
         'high': 'bg-red-900/40 text-red-100'
       };
+
       domainRiskElement.className = `p-3 ${domainRiskColors[domainRisk.risk_level]} rounded-lg`;
       domainRiskElement.querySelector('.risk-level').textContent = domainRisk.risk_level.toUpperCase();
       domainRiskElement.querySelector('.risk-level').className =
