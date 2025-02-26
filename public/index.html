@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="https://app.openads.ai/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="https://app.openads.ai/favicon-16x16.png">
 
-  <title>OpenAds Contextual Advertising Demo</title>
+  <title>OpenAds Agentic Curation Demo</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -90,7 +90,7 @@
 
     .markdown-content {
       line-height: 1.6;
-      color: #4b5563;
+      color: #e5e7eb;
     }
 
     .markdown-content>*:first-child {
@@ -101,25 +101,10 @@
       margin-bottom: 0;
     }
 
-    .markdown-content h1 {
-      font-size: 2em;
-      font-weight: bold;
-      margin: 1em 0 0.5em;
-      color: #111827;
-    }
-
-    .markdown-content h2 {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin: 1em 0 0.5em;
-      color: #111827;
-    }
-
+    .markdown-content h1,
+    .markdown-content h2,
     .markdown-content h3 {
-      font-size: 1.17em;
-      font-weight: bold;
-      margin: 1em 0 0.5em;
-      color: #111827;
+      color: #f3f4f6;
     }
 
     .markdown-content p {
@@ -156,25 +141,25 @@
     }
 
     .markdown-content code {
-      background-color: #f3f4f6;
+      background-color: #374151;
       padding: 0.2em 0.4em;
       border-radius: 3px;
       font-family: monospace;
-      color: #111827;
+      color: #f3f4f6;
     }
 
     .markdown-content pre {
-      background-color: #f3f4f6;
+      background-color: #374151;
       padding: 1em;
       border-radius: 3px;
       overflow-x: auto;
       margin: 1em 0;
-      color: #111827;
+      color: #f3f4f6;
     }
 
     .markdown-content hr {
       border: 0;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       margin: 1em 0;
     }
 
@@ -185,7 +170,7 @@
 
     /* Add fade effect styles */
     .fade {
-      transition: opacity 0.5s ease-in-out;
+      transition: opacity 1.5s ease-in-out;
     }
 
     .fade-out {
@@ -207,8 +192,8 @@
     .tooltip .tooltiptext {
       visibility: hidden;
       width: 300px;
-      background-color: white;
-      color: #374151;
+      background-color: #1f2937;
+      color: #f3f4f6;
       text-align: center;
       border-radius: 6px;
       padding: 5px 0;
@@ -219,7 +204,7 @@
       margin-left: -150px;
       opacity: 0;
       transition: opacity 0.3s;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     /* Tooltip arrow */
@@ -231,7 +216,7 @@
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: white transparent transparent transparent;
+      border-color: #1f2937 transparent transparent transparent;
     }
 
     /* Show the tooltip text when hovering */
@@ -244,23 +229,24 @@
 
 <body>
 
-  <div class="min-h-screen bg-gray-50 text-gray-900 font-custom">
+  <div class="min-h-screen bg-gray-900 text-gray-100 font-custom">
     <div class="container mx-auto p-4 max-w-[1024px]">
       <div class="flex justify-center mb-12">
         <a href="https://openads.ai" target="_blank" rel="noopener noreferrer">
-          <img src="https://openads-images.s3.us-east-1.amazonaws.com/open+logo+black+transp.png" alt="OpenAds AI"
-            width="339" height="78" />
+          <img
+            src="https://cdn.prod.website-files.com/669edcdf474e9a6d4ad71057/669edcdf474e9a6d4ad71071_openads-logo.svg"
+            alt="OpenAds AI" width="339" height="78" class="w-auto h-20" />
         </a>
       </div>
-      <h1 class="text-4xl font-bold mb-4 text-center font-marcellus text-gray-900">Contextual Advertising Demo</h1>
-      <p class="text-center text-gray-600 max-w-2xl mx-auto mb-8 text-lg">
+      <h1 class="text-4xl font-bold mb-4 text-center font-marcellus text-gray-100">Agentic Curation Demo</h1>
+      <p class="text-center text-gray-300 max-w-2xl mx-auto mb-8 text-lg">
         Enter any URL to analyze its content's tone, brand suitability, and contextual relevance.
       </p>
 
       <form id="brand-search-form" class="mb-8 max-w-2xl mx-auto">
         <div class="flex gap-2 relative">
           <input type="text" placeholder="Enter url (e.g., https://forbes.com/the-50-hottest-startups)"
-            class="flex-grow bg-white shadow-sm text-gray-900 placeholder-gray-400 p-4 reticle border border-gray-200 focus:outline-none focus:border-[#d24e35]/50 focus:ring-1 focus:ring-[#d24e35]/50 transition-colors" />
+            class="flex-grow bg-gray-800 shadow-sm text-gray-100 placeholder-gray-400 p-4 reticle border border-gray-700 focus:outline-none focus:border-[#d24e35]/50 focus:ring-1 focus:ring-[#d24e35]/50 transition-colors" />
         </div>
         <p id="url-error" class="text-red-600 mt-2 text-sm hidden">Please enter a valid URL (e.g., https://example.com)
         </p>
@@ -277,20 +263,22 @@
 
       <div id="loading-spinner" class="hidden text-center mb-8">
         <img src="https://advertise.openads.ai/loading-spinner.gif" alt="Loading..." width="64" height="64"
-          class="mx-auto mb-4 [filter:invert(1)]" />
-        <p class="text-xl font-light text-gray-700">Scraping page...</p>
-        <p id="loading-quote" class="mt-4 text-lg italic text-gray-600 max-w-2xl mx-auto fade"></p>
+          class="mx-auto mb-4" />
+        <p class="text-xl font-light">Scraping page...</p>
+        <p id="loading-quote" class="mt-4 text-lg italic text-white/80 max-w-2xl mx-auto"></p>
       </div>
 
       <div id="context-dashboard"
-        class="hidden bg-white/95 backdrop-blur-sm cut-corners-lg shadow-xl mt-8 text-gray-600 p-8 max-w-[1024px] mx-auto mb-8">
+        class="hidden bg-gray-800/95 backdrop-blur-sm cut-corners-lg shadow-xl mt-8 text-gray-300 p-8 max-w-[1024px] mx-auto mb-8">
         <div class="flex items-center justify-between mb-8">
-          <h2 class="text-2xl font-bold font-marcellus text-gray-900">Page Context Analysis</h2>
+          <h2 class="text-2xl font-bold font-marcellus text-gray-100">Page Context Analysis</h2>
           <div class="flex items-center gap-4">
-            <span class="text-sm font-medium text-gray-500">Sentiment & Reading Level:</span>
+            <span class="text-sm font-medium text-gray-300">Sentiment & Reading Level:</span>
             <div class="flex gap-3">
-              <span id="sentiment" class="bg-[#d24e35]/10 text-[#d24e35] px-3 py-1.5 text-sm font-medium"></span>
-              <span id="reading-level" class="bg-[#d24e35]/10 text-[#d24e35] px-3 py-1.5 text-sm font-medium"></span>
+              <span id="sentiment"
+                class="bg-[#d24e35] text-white px-3 py-1.5 text-sm font-medium cut-corners-sm"></span>
+              <span id="reading-level"
+                class="bg-[#d24e35] text-white px-3 py-1.5 text-sm font-medium cut-corners-sm"></span>
             </div>
           </div>
         </div>
@@ -299,17 +287,17 @@
           <!-- Left Column -->
           <div class="space-y-8">
             <!-- IAB Categories -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">IAB Categories</h3>
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-100">Content Categories</h3>
               <div id="iab-categories" class="space-y-4">
                 <div>
-                  <p class="text-sm text-gray-500 mb-2">Primary</p>
+                  <p class="text-sm text-gray-300 mb-2">Primary</p>
                   <div id="primary-category" class="flex flex-wrap gap-2">
                     <!-- Will be populated by JS -->
                   </div>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500 mb-2">Secondary</p>
+                  <p class="text-sm text-gray-300 mb-2">Secondary</p>
                   <div id="secondary-categories" class="flex flex-wrap gap-2">
                     <!-- Will be populated by JS -->
                   </div>
@@ -318,17 +306,17 @@
             </div>
 
             <!-- Advertiser Categories -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Recommended Advertiser Categories</h3>
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-100">Recommended Advertiser Categories</h3>
               <div id="advertiser-categories" class="space-y-4">
                 <div>
-                  <p class="text-sm text-gray-500 mb-2">Primary</p>
+                  <p class="text-sm text-gray-300 mb-2">Primary</p>
                   <div id="advertiser-categories-primary" class="flex flex-wrap gap-2">
                     <!-- Will be populated by JS -->
                   </div>
                 </div>
                 <div>
-                  <p class="text-sm text-gray-500 mb-2">Secondary</p>
+                  <p class="text-sm text-gray-300 mb-2">Secondary</p>
                   <div id="advertiser-categories-secondary" class="flex flex-wrap gap-2">
                     <!-- Will be populated by JS -->
                   </div>
@@ -337,15 +325,15 @@
             </div>
 
             <!-- Content Tone -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Content Tone</h3>
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-100">Content Tone</h3>
               <div id="content-tone" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Content Summary -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Content Summary</h3>
-              <p id="content-summary" class="text-gray-600 leading-relaxed">This Politico article reports on President
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-100">Content Summary</h3>
+              <p id="content-summary" class="text-gray-300 leading-relaxed">This Politico article reports on President
                 Trump's seemingly contradictory statements...</p>
             </div>
           </div>
@@ -353,21 +341,21 @@
           <!-- Middle Column -->
           <div class="space-y-8">
             <!-- Main Topics -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Main Topics</h3>
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-100">Main Topics</h3>
               <div id="main-topics" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Named Entities -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
               <!-- <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Key Entities</h3> -->
               <div id="named-entities" class="space-y-5">
                 <div>
-                  <!-- <p class="text-sm text-gray-500 mb-2">Top Entities</p> -->
+                  <p class="text-sm text-gray-500 mb-2">Top Entities</p>
                   <div id="brands" class="flex flex-wrap gap-2"></div>
                 </div>
                 <div>
-                  <!-- <p class="text-sm text-gray-500 mb-2">Organizations</p> -->
+                  <p class="text-sm text-gray-500 mb-2">Organizations</p>
                   <div id="organizations" class="flex flex-wrap gap-2"></div>
                 </div>
                 <div>
@@ -381,14 +369,14 @@
           <!-- Right Column -->
           <div class="space-y-8">
             <!-- Domain & UGC Risks -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">Domain & Content Risks</h3>
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-100">Domain & Content Risks</h3>
               <div class="grid grid-cols-1 gap-3">
                 <!-- Domain Reputation Risk -->
                 <div class="tooltip">
                   <div class="p-3 rounded-lg" id="domain-reputation-risk">
                     <div class="flex justify-between items-center">
-                      <p class="font-medium text-sm">Domain Reputation</p>
+                      <p class="font-medium text-sm">Domain Risk</p>
                       <span
                         class="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 uppercase risk-level"></span>
                     </div>
@@ -420,8 +408,8 @@
             </div>
 
             <!-- GARM Risk Analysis -->
-            <div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-900">GARM Risk Analysis</h3>
+            <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-sm">
+              <h3 class="text-lg font-semibold mb-4 font-marcellus text-gray-100">GARM Risk Analysis</h3>
               <div id="garm-risks" class="grid grid-cols-1 gap-3"></div>
             </div>
           </div>
@@ -429,8 +417,8 @@
       </div>
 
       <div id="page-content"
-        class="hidden bg-white/95 backdrop-blur-sm rounded-lg shadow-xl mt-8 text-gray-600 p-8 max-w-[1024px] mx-auto">
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-900">OpenAds Contextual Ad</h1>
+        class="hidden bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-xl mt-8 text-gray-300 p-8 max-w-[1024px] mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center text-gray-100">OpenAds Contextual Ad</h1>
         <div class="markdown-content">
           <!-- Content will be inserted here by JavaScript -->
         </div>
@@ -479,17 +467,17 @@
         }
       ],
       cssOverrides: ` :root {
-        --background: #fff5f0;
-        --text: #4a3428;
-        --header: #000000;
-        --header-background: #fff5f0;
-        --title: #000000;
-        --question-bubble: #FFFFFF;
-        --highlight: #b85f2d;
-        --action-button: #d67238;
+        --background: #1f2937;
+        --text: #e5e7eb;
+        --header: #f3f4f6;
+        --header-background: #1f2937;
+        --title: #f3f4f6;
+        --question-bubble: #374151;
+        --highlight: #d24e35;
+        --action-button: #d24e35;
       }
       #visit-site-link {
-        background-color: #d67238;
+        background-color: #d24e35;
         color: white;
       }
       #visit-site-link:hover {
@@ -497,6 +485,7 @@
       }
       .chat-message-bubble {
         border: 1px solid rgba(214, 114, 56, 0.2);
+        background-color: #374151;
       }`
     };
     window.stratos = window.stratos || { queue: [] };
@@ -505,8 +494,10 @@
     });
 
     const quoteElement = document.getElementById('loading-quote');
+    quoteElement.classList.add('fade'); // Add base fade class
     let currentQuoteIndex = Math.floor(Math.random() * quotes.length);
     quoteElement.textContent = quotes[currentQuoteIndex];
+    quoteElement.classList.add('fade-in');
 
     const form = document.getElementById('brand-search-form');
     form.addEventListener('submit', async function(e) {
@@ -547,7 +538,25 @@
       button.disabled = true;
       button.textContent = 'Loading...';
 
+      // Clear previous results
+      document.getElementById('context-dashboard').classList.add('hidden');
       document.getElementById('page-content').classList.add('hidden');
+
+      // Reset all content containers to ensure clean state
+      document.getElementById('sentiment').textContent = '';
+      document.getElementById('reading-level').textContent = '';
+      document.getElementById('primary-category').innerHTML = '';
+      document.getElementById('secondary-categories').innerHTML = '';
+      document.getElementById('advertiser-categories-primary').innerHTML = '';
+      document.getElementById('advertiser-categories-secondary').innerHTML = '';
+      document.getElementById('content-tone').innerHTML = '';
+      document.getElementById('content-summary').textContent = '';
+      document.getElementById('main-topics').innerHTML = '';
+      document.getElementById('brands').innerHTML = '';
+      document.getElementById('organizations').innerHTML = '';
+      document.getElementById('locations').innerHTML = '';
+      document.getElementById('garm-risks').innerHTML = '';
+
       const spinner = document.getElementById('loading-spinner');
       spinner.classList.remove('hidden');
 
@@ -562,18 +571,32 @@
         // Populate the context dashboard
         populateContextDashboard(contextualSignals);
 
-        // Only show the ad slot without page content
+        // Update the page content with ad slot and fallback message
         document.getElementById('page-content').innerHTML = [
           `<h1 class="text-3xl font-bold mb-8 text-center">Contextual Ad</h1>`,
-          '<div class="flex justify-center"><div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4"></div></div>'
+          '<div class="flex justify-center">',
+          '  <div id="inline-ad" class="w-[970px] h-[300px] shadow-md mt-4 mb-4">',
+          '    <div id="ad-fallback" class="hidden h-full flex items-center justify-center bg-gray-800 border border-gray-700">',
+          '      <p class="text-gray-400 text-lg">No advertiser selected for this page.</p>',
+          '    </div>',
+          '  </div>',
+          '</div>'
         ].join('\n\n');
 
         spinner.classList.add('hidden');
         document.getElementById('page-content').classList.remove('hidden');
 
         // Pass the full content to stratos for contextual targeting
-        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + responseBody.pageDoc.extractedMarkdown;
+        const promptText = 'I am looking to buy goods and services related to the following content:\n\n' + responseBody.pageDoc.extractedText;
         window.stratos.queue.push(function() {
+          // Add timeout to show fallback if no ad is generated within 5 seconds
+          const fallbackTimeout = setTimeout(() => {
+            const adSlot = document.getElementById('inline-ad');
+            if (!adSlot.children.length || (adSlot.children.length === 1 && adSlot.children[0].id === 'ad-fallback')) {
+              document.getElementById('ad-fallback').classList.remove('hidden');
+            }
+          }, 5000);
+
           window.stratos.getAds(promptText);
         });
 
@@ -582,8 +605,9 @@
         document.getElementById('page-content').classList.add('hidden');
 
         const generalError = document.getElementById('general-error');
-        generalError.textContent = 'Error: ' + (error.response?.data?.message ?? 'An error occurred while processing your request. Please try again.');
+        generalError.textContent = (error.response?.data?.message ?? 'I was unable to scrape the site\'s content, or did not find sufficient text content to make an evaluation. I\'m a demo, so am limited in my anti-scraping and image analysis capabilities.');
         generalError.classList.remove('hidden');
+        generalError.classList.add('text-white');
         console.error(error);
       } finally {
         button.disabled = false;
@@ -602,9 +626,9 @@
       document.getElementById('reading-level').textContent = readingLevel.charAt(0).toUpperCase() + readingLevel.slice(1);
 
       // IAB Categories
-      document.getElementById('primary-category').innerHTML = createTag(contextualSignals.iab_content_category.primary);
+      document.getElementById('primary-category').innerHTML = createTag(contextualSignals.content_category.primary);
       document.getElementById('secondary-categories').innerHTML =
-        contextualSignals.iab_content_category.secondary
+        contextualSignals.content_category.secondary
           .map(category => createTag(category))
           .join('');
 
@@ -652,10 +676,10 @@
       garmContainer.innerHTML = Object.entries(contextualSignals.garm_risks)
         .map(([key, value]) => {
           const riskColors = {
-            'none': 'bg-green-50 text-green-700',
-            'low': 'bg-yellow-50 text-yellow-700',
-            'medium': 'bg-orange-50 text-orange-700',
-            'high': 'bg-red-50 text-red-700'
+            'none': 'bg-green-900/40 text-green-100',
+            'low': 'bg-yellow-900/40 text-yellow-100',
+            'medium': 'bg-orange-900/40 text-orange-100',
+            'high': 'bg-red-900/40 text-red-100'
           };
           const colorClass = riskColors[value.risk_level] || riskColors.none;
 
@@ -679,13 +703,15 @@
       const domainRiskElement = document.getElementById('domain-reputation-risk');
       const domainRisk = contextualSignals.domain_reputation_risks;
       const domainRiskColors = {
-        'none': 'bg-green-50 text-green-700',
-        'low': 'bg-yellow-50 text-yellow-700',
-        'medium': 'bg-orange-50 text-orange-700',
-        'high': 'bg-red-50 text-red-700'
+        'none': 'bg-green-900/40 text-green-100',
+        'low': 'bg-yellow-900/40 text-yellow-100',
+        'medium': 'bg-orange-900/40 text-orange-100',
+        'high': 'bg-red-900/40 text-red-100'
       };
       domainRiskElement.className = `p-3 ${domainRiskColors[domainRisk.risk_level]} rounded-lg`;
-      domainRiskElement.querySelector('.risk-level').textContent = domainRisk.risk_level;
+      domainRiskElement.querySelector('.risk-level').textContent = domainRisk.risk_level.toUpperCase();
+      domainRiskElement.querySelector('.risk-level').className =
+        `text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 uppercase risk-level`;
       if (domainRisk.risk_level !== 'none') {
         domainRiskElement.parentElement.className = 'tooltip';
         domainRiskElement.parentElement.innerHTML += `<span class="tooltiptext">${domainRisk.evidence}</span>`;
@@ -695,10 +721,10 @@
       const mfaRiskElement = document.getElementById('mfa-risk');
       const mfaRisk = contextualSignals.mfa_level;
       const mfaRiskColors = {
-        'none': 'bg-gray-100 text-gray-400',
-        'low': 'bg-yellow-50 text-yellow-700',
-        'medium': 'bg-orange-50 text-orange-700',
-        'high': 'bg-red-50 text-red-700'
+        'none': 'bg-green-900/40 text-green-100',
+        'low': 'bg-yellow-900/40 text-yellow-100',
+        'medium': 'bg-orange-900/40 text-orange-100',
+        'high': 'bg-red-900/40 text-red-100'
       };
       mfaRiskElement.className = `p-3 ${mfaRiskColors[mfaRisk]} rounded-lg opacity-50`;
       mfaRiskElement.querySelector('.risk-level').textContent = 'COMING SOON';
@@ -710,10 +736,10 @@
       const ugcRiskElement = document.getElementById('ugc-risk');
       const ugcRisk = contextualSignals.ugc_risks;
       const ugcRiskColors = {
-        'none': 'bg-green-50 text-green-700',
-        'low': 'bg-yellow-50 text-yellow-700',
-        'medium': 'bg-orange-50 text-orange-700',
-        'high': 'bg-red-50 text-red-700'
+        'none': 'bg-green-900/40 text-green-100',
+        'low': 'bg-yellow-900/40 text-yellow-100',
+        'medium': 'bg-orange-900/40 text-orange-100',
+        'high': 'bg-red-900/40 text-red-100'
       };
       ugcRiskElement.className = `p-3 ${ugcRiskColors[ugcRisk.risk_level]} rounded-lg`;
       ugcRiskElement.querySelector('.risk-level').textContent = ugcRisk.risk_level;
@@ -723,24 +749,29 @@
       }
     }
 
-    // Function to cycle quotes
+    // Function to cycle quotes with improved animation
     function cycleQuotes() {
       quoteElement.classList.remove('fade-in');
       quoteElement.classList.add('fade-out');
+
       setTimeout(() => {
         currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
         quoteElement.textContent = quotes[currentQuoteIndex];
+
+        // Force browser reflow to ensure smooth transition
+        void quoteElement.offsetWidth;
+
         quoteElement.classList.remove('fade-out');
         quoteElement.classList.add('fade-in');
-      }, 500); // Wait for fade-out to complete
+      }, 1500); // Match the CSS transition duration
     }
 
-    // Cycle quotes every 5 seconds
+    // Cycle quotes every 10 seconds (unchanged)
     setInterval(cycleQuotes, 15000);
 
-    // Update tag generation to remove reticle
+    // Update tag generation to use cut corners and bright orange background
     const createTag = (text) => `
-      <span class="bg-[#d24e35]/10 text-[#d24e35] px-3 py-1.5 text-sm font-medium">
+      <span class="bg-[#d24e35] text-white px-3 py-1.5 text-sm font-medium cut-corners-sm">
         ${text}
       </span>
     `;
@@ -762,16 +793,32 @@
       .map(topic => createTag(topic))
       .join('');
 
-    // Update sentiment and reading level
-    document.getElementById('sentiment').className = 'bg-[#d24e35]/10 text-[#d24e35] px-3 py-1.5 text-sm font-medium';
-    document.getElementById('reading-level').className = 'bg-[#d24e35]/10 text-[#d24e35] px-3 py-1.5 text-sm font-medium';
+    // Update sentiment and reading level tags to match
+    document.getElementById('sentiment').className = 'bg-[#d24e35] text-white px-3 py-1.5 text-sm font-medium cut-corners-sm';
+    document.getElementById('reading-level').className = 'bg-[#d24e35] text-white px-3 py-1.5 text-sm font-medium cut-corners-sm';
 
     // Update IAB Categories to use tags
-    document.getElementById('primary-category').innerHTML = createTag(contextualSignals.iab_content_category.primary);
+    document.getElementById('primary-category').innerHTML = createTag(contextualSignals.content_category.primary);
     document.getElementById('secondary-categories').innerHTML =
-      contextualSignals.iab_content_category.secondary
+      contextualSignals.content_category.secondary
         .map(category => createTag(category))
         .join('');
+
+    // Update risk level styling
+    const riskColors = {
+      'none': 'bg-green-900/40 text-green-100',
+      'low': 'bg-yellow-900/40 text-yellow-100',
+      'medium': 'bg-orange-900/40 text-orange-100',
+      'high': 'bg-red-900/40 text-red-100'
+    };
+
+    // Update the risk containers background
+    const updateRiskContainer = (element, risk) => {
+      const colorClass = riskColors[risk.risk_level] || riskColors.none;
+      element.className = `p-3 ${colorClass} rounded-lg`;
+      element.querySelector('.risk-level').className =
+        `text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 uppercase risk-level`;
+    };
   </script>
   <script async src="https://js.stratos.blue/stratos.js?publisherId=6723c110a57d08398172c304"></script>
 </body>

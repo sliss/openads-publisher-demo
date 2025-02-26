@@ -47,6 +47,24 @@ module.exports = {
     'hover:reticle',
     'active:cut-corners',
     'active:reticle',
+    // Dark mode text colors
+    'text-gray-100',
+    'text-gray-200',
+    'text-gray-300',
+    'text-gray-400',
+    'bg-gray-800',
+    'bg-gray-900',
+    'border-gray-700',
+    'bg-gray-800/95',
+    // Add new color combinations for risk levels
+    {
+      pattern: /bg-(green|yellow|orange|red)-900/,
+      variants: ['hover'],
+    },
+    {
+      pattern: /text-(green|yellow|orange|red)-100/,
+    },
+    'bg-black/20',
   ],
   theme: {
     extend: {
