@@ -133,3 +133,12 @@ dist
 .netlify
 
 public/tw.css
+
+# vim swap files
+.swp
+*.swp
+*.swo
+*.swn
+*.swm
+*.sess
+*.vim

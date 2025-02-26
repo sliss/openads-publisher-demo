@@ -594,7 +594,7 @@
             if (!adSlot.children.length || (adSlot.children.length === 1 && adSlot.children[0].id === 'ad-fallback')) {
               document.getElementById('ad-fallback').classList.remove('hidden');
             }
-          }, 5000);
+          }, 30000);
 
           window.stratos.getAds(null, null, url);
         });
